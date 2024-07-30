@@ -105,10 +105,28 @@ class QuizFragment : Fragment() {
         editor.apply()
     }
 
+    private fun countCorrectAnswers(): Int {
+        var correctCount = 0
+        for (i in answers.indices) {
+            if (answers[i] == correctAnswers[i]) {
+                correctCount++
+            }
+        }
+        return correctCount
+    }
+
     private fun showResults() {
+        val correctCount = countCorrectAnswers()
+        val resultsBuilder = StringBuilder()
+        for (i in questions.indices) {
+            resultsBuilder.append("Question ${i + 1}: ${questions[i]}\n")
+            resultsBuilder.append("Your answer: ${answers.getOrNull(i) ?: "No answer"}\n")
+            resultsBuilder.append("Correct answer: ${correctAnswers[i]}\n\n")
+        }
+
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Quiz Results")
-            .setMessage("You answered ${answers.size} questions.")
+            .setMessage("You answered ${answers.size} questions. Correct answers: $correctCount\n\n${resultsBuilder.toString()}")
             .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             .create()
             .show()
